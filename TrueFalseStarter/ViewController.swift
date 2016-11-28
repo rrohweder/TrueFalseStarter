@@ -11,27 +11,30 @@ import GameKit
 import AudioToolbox
 
 class ViewController: UIViewController {
-    
+
+    // rlr: create an instance of the Questions class
+    var questions = Questions()
+    var questionData: Questions.QuestionAnswer
     let questionsPerRound = 4
     var questionsAsked = 0
     var correctQuestions = 0
     var indexOfSelectedQuestion: Int = 0
+    var letterButtonPressed: Character = "?"
     
     var gameSound: SystemSoundID = 0
-    
-    let trivia: [[String : String]] = [
-        ["Question": "Only female koalas can whistle", "Answer": "False"],
-        ["Question": "Blue whales are technically whales", "Answer": "True"],
-        ["Question": "Camels are cannibalistic", "Answer": "False"],
-        ["Question": "All ducks are birds", "Answer": "True"]
-    ]
     
     @IBOutlet weak var questionField: UILabel!
     @IBOutlet weak var trueButton: UIButton!
     @IBOutlet weak var falseButton: UIButton!
+
+    // my new buttons
+    @IBOutlet weak var AButton: UIButton!
+    @IBOutlet weak var BButton: UIButton!
+    @IBOutlet weak var CButton: UIButton!
+    @IBOutlet weak var DButton: UIButton!
+
     @IBOutlet weak var playAgainButton: UIButton!
     
-
     override func viewDidLoad() {
         super.viewDidLoad()
         loadGameStartSound()
@@ -46,9 +49,38 @@ class ViewController: UIViewController {
     }
     
     func displayQuestion() {
-        indexOfSelectedQuestion = GKRandomSource.sharedRandom().nextInt(upperBound: trivia.count)
-        let questionDictionary = trivia[indexOfSelectedQuestion]
-        questionField.text = questionDictionary["Question"]
+        questionData = questions.getUniqueRandomQuestion()
+        questionField.text = questionData.question
+        // hide all input controls
+        trueButton.isHidden = true
+        falseButton.isHidden = true
+        AButton.isHidden = true
+        BButton.isHidden = true
+        CButton.isHidden = true
+        DButton.isHidden = true
+//        numberInputControl.isHidden = true
+//        textInputControl.ishidden = true
+        // unhide the needed input control
+        switch questionData.answerType {
+            case Questions.answerTypes.trueFalse:
+                trueButton.isHidden = false
+                falseButton.isHidden = false
+            case Questions.answerTypes.letter:
+                AButton.isHidden = false
+                BButton.isHidden = false
+                CButton.isHidden = false
+                DButton.isHidden = false
+            case Questions.answerTypes.number:
+//                numberInputControl.isHidden = false
+                AButton.isHidden = false // until I get a number input in place
+            
+            case Questions.answerTypes.text:
+//                textInputControl.ishidden = false
+                AButton.isHidden = false // until I get a number input in place
+            default:
+                // error - unexpected answerType
+                print("unexpected answerType: \"\(questionData.answerType)\"")
+        }
         playAgainButton.isHidden = true
     }
     
@@ -64,18 +96,49 @@ class ViewController: UIViewController {
         
     }
     
+    
+//    @IBAction func AButton(_ sender: AnyObject) {
+//        letterButtonPressed = "A"
+//    }
+//    
+//    @IBAction func BButton(_ sender: AnyObject) {
+//        letterButtonPressed = "B"
+//    }
+//    
+//    @IBAction func CButton(_ sender: AnyObject) {
+//        letterButtonPressed = "C"
+//    }
+//    
+//    @IBAction func DButton(_ sender: AnyObject) {
+//        letterButtonPressed = "D"
+//    }
+    
+    
+    
     @IBAction func checkAnswer(_ sender: UIButton) {
         // Increment the questions asked counter
         questionsAsked += 1
         
-        let selectedQuestionDict = trivia[indexOfSelectedQuestion]
-        let correctAnswer = selectedQuestionDict["Answer"]
+//        let selectedQuestionDict = questions[indexOfSelectedQuestion].
+//        let correctAnswer = selectedQuestionDict["Answer"]
+//        
+//        if (sender === trueButton &&  correctAnswer == "True") || (sender === falseButton && correctAnswer == "False") {
+//            correctQuestions += 1
+//            questionField.text = "Correct!"
+//        } else {
+//            questionField.text = "Sorry, wrong answer!"
+//        }
         
-        if (sender === trueButton &&  correctAnswer == "True") || (sender === falseButton && correctAnswer == "False") {
-            correctQuestions += 1
-            questionField.text = "Correct!"
-        } else {
-            questionField.text = "Sorry, wrong answer!"
+        
+        switch sender {
+            case trueButton: questionField.text = "trueButton"
+            case falseButton: questionField.text = "falseButton"
+            case AButton: questionField.text = "AButton"
+            case BButton: questionField.text = "BButton"
+            case CButton: questionField.text = "CButton"
+            case DButton: questionField.text = "DButton"
+            default: questionField.text = sender.description
+            
         }
         
         loadNextRoundWithDelay(seconds: 2)
@@ -92,10 +155,6 @@ class ViewController: UIViewController {
     }
     
     @IBAction func playAgain() {
-        // Show the answer buttons
-        trueButton.isHidden = false
-        falseButton.isHidden = false
-        
         questionsAsked = 0
         correctQuestions = 0
         nextRound()

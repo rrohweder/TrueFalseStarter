@@ -49,10 +49,10 @@ class Questions {
             question:"Which letter is expressed as Charlie by the military? A, B, C or D",
             answerType:answerTypes.letter,
             trueFalseAnswer:false,
-            letterAnswer:" ",
+            letterAnswer:"C",
             numAnswer:0,
-            textAnswer:""),
-    
+            textAnswer:"")
+ /* ,
         QuestionAnswer(
             question:"How many projects are there in the TeamTreehouse TechDegree?\n6\n9\n12\n18",
             answerType:answerTypes.number,
@@ -68,6 +68,7 @@ class Questions {
             letterAnswer:" ",
             numAnswer:12,
             textAnswer:"I see dead people"),
+ */
     ]
     
     var indexOfSelectedQuestion: Int

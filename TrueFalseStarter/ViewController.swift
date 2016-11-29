@@ -27,11 +27,11 @@ class ViewController: UIViewController {
     @IBOutlet weak var trueButton: UIButton!
     @IBOutlet weak var falseButton: UIButton!
 
-    // my new buttons
-    @IBOutlet weak var AButton: UIButton!
-    @IBOutlet weak var BButton: UIButton!
-    @IBOutlet weak var CButton: UIButton!
-    @IBOutlet weak var DButton: UIButton!
+    @IBOutlet weak var aButton: UIButton!
+    @IBOutlet weak var bButton: UIButton!
+    @IBOutlet weak var cButton: UIButton!
+    @IBOutlet weak var dButton: UIButton!
+
 
     @IBOutlet weak var playAgainButton: UIButton!
     
@@ -54,10 +54,10 @@ class ViewController: UIViewController {
         // hide all input controls
         trueButton.isHidden = true
         falseButton.isHidden = true
-        AButton.isHidden = true
-        BButton.isHidden = true
-        CButton.isHidden = true
-        DButton.isHidden = true
+        aButton.isHidden = true
+        bButton.isHidden = true
+        cButton.isHidden = true
+        dButton.isHidden = true
 
 // these are not ready yet
 //        numberInput.isHidden = true
@@ -69,17 +69,17 @@ class ViewController: UIViewController {
                 trueButton.isHidden = false
                 falseButton.isHidden = false
             case .letter:
-                AButton.isHidden = false
-                BButton.isHidden = false
-                CButton.isHidden = false
-                DButton.isHidden = false
+                aButton.isHidden = false
+                bButton.isHidden = false
+                cButton.isHidden = false
+                dButton.isHidden = false
             case .number:
 //                numberInput.isHidden = false
-                AButton.isHidden = false // until I get a number input in place
+                aButton.isHidden = false // until I get a number input in place
             
             case .text:
 //                textInputControl.ishidden = false
-                AButton.isHidden = false // until I get a text input in place
+                aButton.isHidden = false // until I get a text input in place
             default:
                 // error - unexpected answerType
                 print("unexpected answerType")
@@ -97,13 +97,7 @@ class ViewController: UIViewController {
         
         questionField.text = "Way to go!\nYou got \(correctQuestions) out of \(questionsPerRound) correct!"
     }
-    
-    // I want a click of the AButton to be handled by checkAnswer() (below)
-    @IBAction func AButton(_ sender: AnyObject) {
-        letterButtonPressed = "A"
-    }
-    
-    
+        
     @IBAction func checkAnswer(_ sender: UIButton) {
         var isCorrect: Bool = false
 
@@ -121,22 +115,22 @@ class ViewController: UIViewController {
                     isCorrect = true
                 }
             
-            case AButton:
+            case aButton:
                 if questions.checkAnswer(type: Questions.answerTypes.letter, boolAnswer: true, letterAnswer: "A", numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
                 }
             
-            case BButton:
+            case bButton:
                 if questions.checkAnswer(type: Questions.answerTypes.letter, boolAnswer: true, letterAnswer: "B", numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
                 }
             
-            case CButton:
+            case cButton:
                 if questions.checkAnswer(type: Questions.answerTypes.letter, boolAnswer: true, letterAnswer: "C", numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
                 }
             
-            case DButton: questionField.text = "DButton"
+            case dButton: questionField.text = "DButton"
                 if questions.checkAnswer(type: Questions.answerTypes.letter, boolAnswer: true, letterAnswer: "D", numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
                 }

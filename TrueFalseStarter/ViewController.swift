@@ -117,8 +117,7 @@ class ViewController: UIViewController {
                 }
             
             case bButton:
-                bButton.setTitleColor(UIColor.yellow, for: UIControlState.normal)
-                if questions.checkAnswer(type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 1, numberAnswer: 0, textAnswer: "" ) {
+                 if questions.checkAnswer(type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 1, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
                 }
             

@@ -13,8 +13,10 @@ class Questions {
     enum answerTypes {
         case trueFalse
         case multipleChoice
+/* might add these later:
         case number
         case text
+ */
     }
     
     struct QuestionAnswer {
@@ -23,57 +25,156 @@ class Questions {
         let trueFalseAnswer: Bool
         let answerOptions: [String]
         let multiChoiceAnswer: Int
+/* might add these later:
         let numAnswer: Int
         let textAnswer: String
+*/
     }
     
     // an array of QuestionAnswer structs
     let questionsArray = [
-    
-        QuestionAnswer(
-            question:"Is this fun, or what?",
-            answerType:answerTypes.trueFalse,
-            trueFalseAnswer:true,
-            answerOptions: [],
-            multiChoiceAnswer: 0,
-            numAnswer: 0,
-            textAnswer:""),
         
         QuestionAnswer(
-            question:"No really, am I right?",
+            question: "Only female koalas can whistle",
             answerType:answerTypes.trueFalse,
-            trueFalseAnswer:true,
+            trueFalseAnswer:false,
             answerOptions: [],
-            multiChoiceAnswer: 0,
-            numAnswer: 0,
-            textAnswer:""),
+            multiChoiceAnswer: 0
+            // numAnswer: 0,
+            // textAnswer:""
+        ),
 
         QuestionAnswer(
-            question:"Which planet is closest to the sun?",
-            answerType:answerTypes.multipleChoice,
-            trueFalseAnswer:false,
-            answerOptions:["Pluto","Venus","Mercury","Saturn"],
-            multiChoiceAnswer: 2,
-            numAnswer:0,
-            textAnswer:"")
- /* ,
+            question: "Blue whales are technically whales",
+            answerType:answerTypes.trueFalse,
+            trueFalseAnswer:true,
+            answerOptions: [],
+            multiChoiceAnswer: 0
+            // numAnswer: 0,
+            // textAnswer:""
+        ),
+            
         QuestionAnswer(
-            question:"How many projects are there in the TeamTreehouse TechDegree?\n6\n9\n12\n18",
-            answerType:answerTypes.number,
+            question: "Camels are cannibalistic",
+            answerType:answerTypes.trueFalse,
             trueFalseAnswer:false,
-            answerOptions:" ",
-            numAnswer:12,
-            textAnswer:""),
+            answerOptions: [],
+            multiChoiceAnswer: 0
+            // numAnswer: 0,
+            // textAnswer:""
+        ),
         
         QuestionAnswer(
-            question:"What is the most famous line from the movie The Sixth Sense?",
-            answerType:answerTypes.text,
+            question: "All ducks are birds",
+            answerType:answerTypes.trueFalse,
+            trueFalseAnswer:true,
+            answerOptions: [],
+            multiChoiceAnswer: 0
+            // numAnswer: 0,
+            // textAnswer:""
+        ),
+        
+        QuestionAnswer(
+            question:"This was the only US President to serve more than two consecutive terms:",
+            answerType:answerTypes.multipleChoice,
             trueFalseAnswer:false,
-            answerOptions:" ",
-            numAnswer:12,
-            textAnswer:"I see dead people"),
- */
-    ]
+            answerOptions: ["George Washington","Franklin D. Roosevelt","Woodrow Wilson","Andrew Jackson"],
+            multiChoiceAnswer: 1
+            // numAnswer: 0,
+            // textAnswer:""
+        ),
+        
+        QuestionAnswer(
+            question:"Which of the following countries has the most residents?",
+            answerType:answerTypes.multipleChoice,
+            trueFalseAnswer:false,
+            answerOptions: ["Nigeria","Russia","Iran","Vietnam"],
+            multiChoiceAnswer: 0
+            // numAnswer: 0,
+            // textAnswer:""
+            ),
+
+        QuestionAnswer(
+            question:"In what year was the United Nations founded?",
+            answerType:answerTypes.multipleChoice,
+            trueFalseAnswer:false,
+            answerOptions:["1918","1919","1945","1954"],
+            multiChoiceAnswer: 2
+            // numAnswer:0,
+            // textAnswer:""
+        ),
+ 
+        QuestionAnswer(
+            question:"The Titanic departed from the United Kingdom, where was it supposed to arrive?",
+            answerType: answerTypes.multipleChoice,
+            trueFalseAnswer: false,
+            answerOptions: ["Paris","Washington D.C.","New York City","Boston"],
+            multiChoiceAnswer: 2
+            // numAnswer: 0,
+            // textAnswer: ""
+        ),
+        
+        QuestionAnswer(
+            question:"Which nation produces the most oil?",
+            answerType:answerTypes.multipleChoice,
+            trueFalseAnswer:false,
+            answerOptions:["Iran","Iraq","Brazil","Canada"],
+            multiChoiceAnswer: 3
+            // numAnswer: 0,
+            // textAnswer:""
+        ),
+ 
+        QuestionAnswer(
+            question:"Which country has most recently won consecutive World Cups in Soccer?",
+            answerType:answerTypes.multipleChoice,
+            trueFalseAnswer:false,
+            answerOptions:["Italy","Brazil","Argetina","Spain"],
+            multiChoiceAnswer: 1
+            // numAnswer: 0,
+            // textAnswer:""
+        ),
+
+        QuestionAnswer(
+            question:"Which of the following rivers is longest?",
+            answerType:answerTypes.multipleChoice,
+            trueFalseAnswer:false,
+            answerOptions:["Yangtze","Mississippi","Congo","Mekong"],
+            multiChoiceAnswer: 1
+            // numAnswer: 0,
+            // textAnswer:""
+        ),
+
+        QuestionAnswer(
+            question:"Which city is the oldest?",
+            answerType:answerTypes.multipleChoice,
+            trueFalseAnswer:false,
+            answerOptions:["Mexico City","Cape Town","San Juan","Sydney"],
+            multiChoiceAnswer: 0
+            // numAnswer: 0,
+            // textAnswer:""
+        ),
+
+        QuestionAnswer(
+            question:"Which country was the first to allow women to vote in national elections?",
+            answerType:answerTypes.multipleChoice,
+            trueFalseAnswer:false,
+            answerOptions:["Poland","United States","Sweden","Senegal"],
+            multiChoiceAnswer: 0
+            // numAnswer: 0,
+            // textAnswer:""
+        ),
+
+        QuestionAnswer(
+            question:"Which of these countries won the most medals in the 2012 Summer Games?",
+            answerType:answerTypes.multipleChoice,
+            trueFalseAnswer:false,
+            answerOptions:["France","Germany","Japan","Great Britian"],
+            multiChoiceAnswer: 3
+            // numAnswer: 0,
+            // textAnswer:""
+        )
+
+        ]
     
     var indexOfSelectedQuestion: Int
     var questionsUsed = [Int]()
@@ -111,6 +212,8 @@ class Questions {
                 if questionsArray[indexOfSelectedQuestion].multiChoiceAnswer == selectedAnswer {
                     return true
                 }
+            
+/* might add these later:
             case .number:
                 if questionsArray[indexOfSelectedQuestion].numAnswer == numberAnswer {
                     return true
@@ -119,6 +222,7 @@ class Questions {
                 if questionsArray[indexOfSelectedQuestion].textAnswer == textAnswer {
                     return true
                 }
+ */
             // default: not needed - all enum values spoken for
         }
         return false

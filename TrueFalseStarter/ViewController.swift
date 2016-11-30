@@ -77,16 +77,8 @@ class ViewController: UIViewController {
                 cButton.isHidden = false
                 dButton.setTitle(questions.getMultiChoiceAnswers()[3], for: UIControlState.normal)
                 dButton.isHidden = false
-            case .number:
-//                numberInput.isHidden = false
-                aButton.isHidden = false // until I get a number input in place
-            
-            case .text:
-//                textInputControl.ishidden = false
-                aButton.isHidden = false // until I get a text input in place
-            default:
-                // error - unexpected answerType
-                print("unexpected answerType")
+
+            // default: not needed - using all enum types
         }
         playAgainButton.isHidden = true
     }
@@ -125,6 +117,7 @@ class ViewController: UIViewController {
                 }
             
             case bButton:
+                bButton.setTitleColor(UIColor.yellow, for: UIControlState.normal)
                 if questions.checkAnswer(type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 1, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
                 }

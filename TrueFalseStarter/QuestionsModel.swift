@@ -12,7 +12,7 @@ class Questions {
 
     enum answerTypes {
         case trueFalse
-        case letter
+        case multipleChoice
         case number
         case text
     }
@@ -21,7 +21,8 @@ class Questions {
         let question: String
         let answerType: answerTypes
         let trueFalseAnswer: Bool
-        let letterAnswer: Character
+        let answerOptions: [String]
+        let multiChoiceAnswer: Int
         let numAnswer: Int
         let textAnswer: String
     }
@@ -33,7 +34,8 @@ class Questions {
             question:"Is this fun, or what?",
             answerType:answerTypes.trueFalse,
             trueFalseAnswer:true,
-            letterAnswer: " ",
+            answerOptions: [],
+            multiChoiceAnswer: 0,
             numAnswer: 0,
             textAnswer:""),
         
@@ -41,15 +43,17 @@ class Questions {
             question:"No really, am I right?",
             answerType:answerTypes.trueFalse,
             trueFalseAnswer:true,
-            letterAnswer: " ",
+            answerOptions: [],
+            multiChoiceAnswer: 0,
             numAnswer: 0,
             textAnswer:""),
 
         QuestionAnswer(
-            question:"Which letter is expressed as Charlie by the military? A, B, C or D",
-            answerType:answerTypes.letter,
+            question:"Which planet is closest to the sun?",
+            answerType:answerTypes.multipleChoice,
             trueFalseAnswer:false,
-            letterAnswer:"C",
+            answerOptions:["Pluto","Venus","Mercury","Saturn"],
+            multiChoiceAnswer: 2,
             numAnswer:0,
             textAnswer:"")
  /* ,
@@ -57,7 +61,7 @@ class Questions {
             question:"How many projects are there in the TeamTreehouse TechDegree?\n6\n9\n12\n18",
             answerType:answerTypes.number,
             trueFalseAnswer:false,
-            letterAnswer:" ",
+            answerOptions:" ",
             numAnswer:12,
             textAnswer:""),
         
@@ -65,7 +69,7 @@ class Questions {
             question:"What is the most famous line from the movie The Sixth Sense?",
             answerType:answerTypes.text,
             trueFalseAnswer:false,
-            letterAnswer:" ",
+            answerOptions:" ",
             numAnswer:12,
             textAnswer:"I see dead people"),
  */
@@ -88,19 +92,23 @@ class Questions {
 
     }
     
+    func getMultiChoiceAnswers() -> [String] {
+        return questionsArray[indexOfSelectedQuestion].answerOptions
+    }
+    
     func getQuestionType() -> answerTypes {
         return questionsArray[indexOfSelectedQuestion].answerType
     }
     
-    func checkAnswer(type: answerTypes, boolAnswer: Bool, letterAnswer: Character, numberAnswer: Int, textAnswer: String ) -> Bool {
+    func checkAnswer(type: answerTypes, boolAnswer: Bool, selectedAnswer: Int, numberAnswer: Int, textAnswer: String ) -> Bool {
 
         switch type {
             case .trueFalse:
                 if questionsArray[indexOfSelectedQuestion].trueFalseAnswer == boolAnswer {
                     return true
                 }
-            case .letter:
-                if questionsArray[indexOfSelectedQuestion].letterAnswer == letterAnswer {
+            case .multipleChoice:
+                if questionsArray[indexOfSelectedQuestion].multiChoiceAnswer == selectedAnswer {
                     return true
                 }
             case .number:

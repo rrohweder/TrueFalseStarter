@@ -68,10 +68,14 @@ class ViewController: UIViewController {
             case .trueFalse:
                 trueButton.isHidden = false
                 falseButton.isHidden = false
-            case .letter:
+            case .multipleChoice:
+                aButton.setTitle(questions.getMultiChoiceAnswers()[0], for: UIControlState.normal)
                 aButton.isHidden = false
+                bButton.setTitle(questions.getMultiChoiceAnswers()[1], for: UIControlState.normal)
                 bButton.isHidden = false
+                cButton.setTitle(questions.getMultiChoiceAnswers()[2], for: UIControlState.normal)
                 cButton.isHidden = false
+                dButton.setTitle(questions.getMultiChoiceAnswers()[3], for: UIControlState.normal)
                 dButton.isHidden = false
             case .number:
 //                numberInput.isHidden = false
@@ -106,32 +110,32 @@ class ViewController: UIViewController {
         
         switch sender {
             case trueButton:
-                if questions.checkAnswer(type: Questions.answerTypes.trueFalse, boolAnswer: true, letterAnswer: " ", numberAnswer: 0, textAnswer: "" ) {
+                if questions.checkAnswer(type: Questions.answerTypes.trueFalse, boolAnswer: true, selectedAnswer: 0, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
                 }
 
             case falseButton:
-                if questions.checkAnswer(type: Questions.answerTypes.trueFalse, boolAnswer: false, letterAnswer: " ", numberAnswer: 0, textAnswer: "" ) {
+                if questions.checkAnswer(type: Questions.answerTypes.trueFalse, boolAnswer: false, selectedAnswer: 0, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
                 }
             
             case aButton:
-                if questions.checkAnswer(type: Questions.answerTypes.letter, boolAnswer: true, letterAnswer: "A", numberAnswer: 0, textAnswer: "" ) {
+                if questions.checkAnswer(type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 0, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
                 }
             
             case bButton:
-                if questions.checkAnswer(type: Questions.answerTypes.letter, boolAnswer: true, letterAnswer: "B", numberAnswer: 0, textAnswer: "" ) {
+                if questions.checkAnswer(type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 1, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
                 }
             
             case cButton:
-                if questions.checkAnswer(type: Questions.answerTypes.letter, boolAnswer: true, letterAnswer: "C", numberAnswer: 0, textAnswer: "" ) {
+                if questions.checkAnswer(type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 2, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
                 }
             
             case dButton: questionField.text = "DButton"
-                if questions.checkAnswer(type: Questions.answerTypes.letter, boolAnswer: true, letterAnswer: "D", numberAnswer: 0, textAnswer: "" ) {
+                if questions.checkAnswer(type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 3, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
                 }
             

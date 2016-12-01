@@ -6,6 +6,11 @@
 //  Copyright © 2016 Treehouse. All rights reserved.
 //
 
+/*
+I am succeeding at turning the correct T/F answer green, but not the ABCD correct answer,
+nor at changing the selected (wrong) button red.  Is it because it is in a different state?
+*/
+
 import UIKit
 import GameKit
 import AudioToolbox
@@ -53,6 +58,7 @@ class ViewController: UIViewController {
         
         // hide all input controls
         trueButton.isHidden = true
+        
         falseButton.isHidden = true
         aButton.isHidden = true
         bButton.isHidden = true
@@ -99,40 +105,61 @@ class ViewController: UIViewController {
 
         // Increment the questions asked counter
         questionsAsked += 1
-        
+        print(sender.state)
         switch sender {
             case trueButton:
                 if questions.checkAnswer(type: Questions.answerTypes.trueFalse, boolAnswer: true, selectedAnswer: 0, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
+                }
+                if (isCorrect == false) {
+                    // trueButton.titleLabel?.textColor = UIColor.red
+                    trueButton.setTitleColor(UIColor.red, for:UIControlState.highlighted)
                 }
 
             case falseButton:
                 if questions.checkAnswer(type: Questions.answerTypes.trueFalse, boolAnswer: false, selectedAnswer: 0, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
                 }
+                if (isCorrect == false) {
+                    // falseButton.titleLabel?.textColor = UIColor.red
+                    falseButton.setTitleColor(UIColor.red, for:UIControlState.highlighted)
+                }
             
             case aButton:
                 if questions.checkAnswer(type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 0, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
+                }
+                if (!isCorrect) {
+                    aButton.tintColor = UIColor.red
+                    // setTitleColor(UIColor.red, for: UIControlState.normal)
                 }
             
             case bButton:
                  if questions.checkAnswer(type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 1, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
                 }
+                 if (!isCorrect) {
+                    bButton.tintColor = UIColor.red
+                }
             
             case cButton:
                 if questions.checkAnswer(type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 2, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
+                    
+                }
+                if (!isCorrect) {
+                    cButton.tintColor = UIColor.red
                 }
             
             case dButton: questionField.text = "DButton"
                 if questions.checkAnswer(type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 3, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
                 }
+                if (!isCorrect) {
+                    dButton.tintColor = UIColor.red
+                }
             
             default: questionField.text = sender.description
-            
         }
 
         if isCorrect {
@@ -141,7 +168,45 @@ class ViewController: UIViewController {
         } else {
             questionField.text = "Sorry, wrong answer!"
         }
+
+// highlight the right answer...  STUPID: executes, but does not change the color
+        var typeOfAnswer: Questions.answerTypes
+        var boolAnswer: Bool
+        let correctAnswer: Int
+        (typeOfAnswer, boolAnswer, correctAnswer) = questions.getCorrectAnswer()
+        if (typeOfAnswer == Questions.answerTypes.trueFalse) {
+            if (boolAnswer == true) {
+                trueButton.titleLabel?.textColor = UIColor.green
+            } else {
+                falseButton.titleLabel?.textColor = UIColor.green
+            }
+        } else {
+            switch correctAnswer {
+                case 0: aButton.titleLabel?.textColor = UIColor.green
+                case 1: bButton.titleLabel?.textColor = UIColor.green
+                case 2: cButton.titleLabel?.textColor = UIColor.green
+                case 3: dButton.titleLabel?.textColor = UIColor.green
+                default: print("selectedAnswer is outside # questions range.")
+            }
+        }
+        
         loadNextRoundWithDelay(seconds: 2)
+        
+// STUPID: these execute, but do not change the color
+       
+        // reset text color for all buttons
+        // less code than tracking correct & incorrect
+        trueButton.setTitleColor(UIColor.white, for: UIControlState.normal)
+        falseButton.setTitleColor(UIColor.white, for: UIControlState.normal)
+        aButton.setTitleColor(UIColor.white, for: UIControlState.normal)
+        bButton.setTitleColor(UIColor.white, for: UIControlState.normal)
+        cButton.setTitleColor(UIColor.white, for: UIControlState.normal)
+        dButton.setTitleColor(UIColor.white, for: UIControlState.normal)
+        
+        
+        
+        
+        
     }
     
     func nextRound() {

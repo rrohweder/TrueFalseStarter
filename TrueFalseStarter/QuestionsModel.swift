@@ -201,6 +201,10 @@ class Questions {
         return questionsArray[indexOfSelectedQuestion].answerType
     }
     
+    func getCorrectAnswer() -> (answerTypes, Bool, Int) {
+        return (questionsArray[indexOfSelectedQuestion].answerType, questionsArray[indexOfSelectedQuestion].trueFalseAnswer, questionsArray[indexOfSelectedQuestion].multiChoiceAnswer)
+    }
+    
     func checkAnswer(type: answerTypes, boolAnswer: Bool, selectedAnswer: Int, numberAnswer: Int, textAnswer: String ) -> Bool {
 
         switch type {

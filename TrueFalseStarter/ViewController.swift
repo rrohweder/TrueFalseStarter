@@ -6,22 +6,12 @@
 //  Copyright © 2016 Treehouse. All rights reserved.
 //
 
-// OPTIONAL: Add two sound effects, one for correct answers and one for incorrect.
-// You may also add sounds at game end, or wherever else you see fit. (Hint: you 
-// can base your solution on code already found in the starter app.
-
-/*
-I am succeeding at turning the correct T/F answer green, but not the ABCD correct answer,
-nor at changing the selected (wrong) button red.  Is it because it is in a different state?
-*/
-
 import UIKit
 import GameKit
 import AudioToolbox
 
 class ViewController: UIViewController {
 
-    // rlr: create an instance of the Questions class
     var questions = Questions()
     
     let questionsPerRound = 4
@@ -30,9 +20,6 @@ class ViewController: UIViewController {
     var indexOfSelectedQuestion: Int = 0
     var letterButtonPressed: Character = "?"
 
-/* the old way
-    var gameSound: SystemSoundID = 0
-*/
     var gameSounds = [String: SystemSoundID]()
     var GameSoundID: SystemSoundID = 0
 
@@ -66,17 +53,31 @@ class ViewController: UIViewController {
         questionField.text = questions.getUniqueRandomQuestion()
         
         // hide all input controls
+        playAgainButton.isHidden = true
         trueButton.isHidden = true
-        
         falseButton.isHidden = true
         aButton.isHidden = true
         bButton.isHidden = true
         cButton.isHidden = true
         dButton.isHidden = true
+        // May add these later...
+        //      numberInput.isHidden = true
+        //      textInputControl.ishidden = true
+        
+        /*
+         When the user picks the wrong answer, I was succeeding at turning the correct answer green,
+         EXCEPT ON THE FIRST QUESTION. Adding these lines got it to work for the first question, but 
+         I do not know why...  I tried to find an attribute on the correct-answer button that would
+         tell me what I was doing wrong, but UIButton has a ton of attributes!
+         */
+        
+         trueButton.setTitleColor(UIColor.white, for: UIControlState.normal)
+         falseButton.setTitleColor(UIColor.white, for: UIControlState.normal)
+         aButton.setTitleColor(UIColor.white, for: UIControlState.normal)
+         bButton.setTitleColor(UIColor.white, for: UIControlState.normal)
+         cButton.setTitleColor(UIColor.white, for: UIControlState.normal)
+         dButton.setTitleColor(UIColor.white, for: UIControlState.normal)
 
-// these are not ready yet
-//        numberInput.isHidden = true
-//        textInputControl.ishidden = true
         
         // unhide the needed input control
         switch questions.getQuestionType() {
@@ -92,10 +93,8 @@ class ViewController: UIViewController {
                 cButton.isHidden = false
                 dButton.setTitle(questions.getMultiChoiceAnswers()[3], for: UIControlState.normal)
                 dButton.isHidden = false
-
-            // default: not needed - using all enum types
+                // default not needed - using all enum types
         }
-        playAgainButton.isHidden = true
     }
     
     func displayScore() {
@@ -110,61 +109,44 @@ class ViewController: UIViewController {
     }
         
     @IBAction func checkAnswer(_ sender: UIButton) {
+
         var isCorrect: Bool = false
+        var typeOfAnswer: Questions.answerTypes
+        var boolAnswer: Bool
+        let correctAnswer: Int
 
         // Increment the questions asked counter
         questionsAsked += 1
-        print(sender.state)
+
         switch sender {
             case trueButton:
                 if questions.checkAnswer(type: Questions.answerTypes.trueFalse, boolAnswer: true, selectedAnswer: 0, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
-                }
-                if (isCorrect == false) {
-                    // trueButton.titleLabel?.textColor = UIColor.red
-                    trueButton.setTitleColor(UIColor.red, for:UIControlState.highlighted)
                 }
 
             case falseButton:
                 if questions.checkAnswer(type: Questions.answerTypes.trueFalse, boolAnswer: false, selectedAnswer: 0, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
                 }
-                if (isCorrect == false) {
-                    // falseButton.titleLabel?.textColor = UIColor.red
-                    falseButton.setTitleColor(UIColor.red, for:UIControlState.highlighted)
-                }
             
             case aButton:
                 if questions.checkAnswer(type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 0, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
-                }
-                if (!isCorrect) {
-                    aButton.tintColor = UIColor.red
-                    // setTitleColor(UIColor.red, for: UIControlState.normal)
                 }
             
             case bButton:
                  if questions.checkAnswer(type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 1, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
                 }
-                 if (!isCorrect) {
-                    bButton.tintColor = UIColor.red
-                }
             
             case cButton:
                 if questions.checkAnswer(type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 2, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
                 }
-                if (!isCorrect) {
-                    cButton.tintColor = UIColor.red
-                }
             
             case dButton: questionField.text = "DButton"
                 if questions.checkAnswer(type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 3, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
-                }
-                if (!isCorrect) {
-                    dButton.tintColor = UIColor.red
                 }
             
             default: questionField.text = sender.description
@@ -179,10 +161,6 @@ class ViewController: UIViewController {
             playGameSounds(soundName: "Incorrect")
         }
 
-// highlight the right answer...  STUPID: executes, but does not change the color
-        var typeOfAnswer: Questions.answerTypes
-        var boolAnswer: Bool
-        let correctAnswer: Int
         (typeOfAnswer, boolAnswer, correctAnswer) = questions.getCorrectAnswer()
         if (typeOfAnswer == Questions.answerTypes.trueFalse) {
             if (boolAnswer == true) {
@@ -202,10 +180,7 @@ class ViewController: UIViewController {
         
         loadNextRoundWithDelay(seconds: 2)
         
-// STUPID: these execute, but do not change the color
-       
         // reset text color for all buttons
-        // less code than tracking correct & incorrect
         trueButton.setTitleColor(UIColor.white, for: UIControlState.normal)
         falseButton.setTitleColor(UIColor.white, for: UIControlState.normal)
         aButton.setTitleColor(UIColor.white, for: UIControlState.normal)
@@ -213,17 +188,13 @@ class ViewController: UIViewController {
         cButton.setTitleColor(UIColor.white, for: UIControlState.normal)
         dButton.setTitleColor(UIColor.white, for: UIControlState.normal)
         
-        
-        
-        
-        
     }
     
     func nextRound() {
         if questionsAsked == questionsPerRound {
             // Game is over
             displayScore()
-            playGameSounds(soundName: "Start")
+            playGameSounds(soundName: "End")
         } else {
             // Continue game
             displayQuestion()
@@ -237,7 +208,6 @@ class ViewController: UIViewController {
     }
     
 
-    
     // MARK: Helper Methods
     
     func loadNextRoundWithDelay(seconds: Int) {
@@ -259,8 +229,6 @@ class ViewController: UIViewController {
          AudioServicesCreateSystemSoundID(soundURL as CFURL, &GameSoundID)
          gameSounds["Start"] = GameSoundID
         
-
-// pathToSoundFile is nil after the following call. the file name is correct, and it is in the same dir as the file above...?
          pathToSoundFile = Bundle.main.path(forResource: "Crash-Cymbal-1", ofType: "wav")
          soundURL = URL(fileURLWithPath: pathToSoundFile!)
          AudioServicesCreateSystemSoundID(soundURL as CFURL, &GameSoundID)
@@ -277,19 +245,6 @@ class ViewController: UIViewController {
          gameSounds["Incorrect"] = GameSoundID
      }
   
-/*
-
-    func loadGameStartSound() {
-        let pathToSoundFile = Bundle.main.path(forResource: "GameSound", ofType: "wav")
-        let soundURL = URL(fileURLWithPath: pathToSoundFile!)
-        AudioServicesCreateSystemSoundID(soundURL as CFURL, &gameSound)
-    }
-    
-    func playGameStartSound() {
-        AudioServicesPlaySystemSound(gameSound)
-    }
-
-*/
     func playGameSounds(soundName: String) {
         AudioServicesPlaySystemSound(gameSounds[soundName]!)
     }

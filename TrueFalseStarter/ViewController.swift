@@ -6,6 +6,10 @@
 //  Copyright © 2016 Treehouse. All rights reserved.
 //
 
+// OPTIONAL: Add two sound effects, one for correct answers and one for incorrect.
+// You may also add sounds at game end, or wherever else you see fit. (Hint: you 
+// can base your solution on code already found in the starter app.
+
 /*
 I am succeeding at turning the correct T/F answer green, but not the ABCD correct answer,
 nor at changing the selected (wrong) button red.  Is it because it is in a different state?
@@ -25,9 +29,13 @@ class ViewController: UIViewController {
     var correctQuestions = 0
     var indexOfSelectedQuestion: Int = 0
     var letterButtonPressed: Character = "?"
-    
+
+/* the old way
     var gameSound: SystemSoundID = 0
-    
+*/
+    var gameSounds = [String: SystemSoundID]()
+    var GameSoundID: SystemSoundID = 0
+
     @IBOutlet weak var questionField: UILabel!
     @IBOutlet weak var trueButton: UIButton!
     @IBOutlet weak var falseButton: UIButton!
@@ -42,9 +50,10 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadGameStartSound()
+        loadGameSounds()
+        
         // Start game
-        playGameStartSound()
+        playGameSounds(soundName: "Start")
         displayQuestion()
     }
 
@@ -145,7 +154,6 @@ class ViewController: UIViewController {
             case cButton:
                 if questions.checkAnswer(type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 2, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
-                    
                 }
                 if (!isCorrect) {
                     cButton.tintColor = UIColor.red
@@ -165,8 +173,10 @@ class ViewController: UIViewController {
         if isCorrect {
             correctQuestions += 1
             questionField.text = "Correct!"
+            playGameSounds(soundName: "Correct")
         } else {
             questionField.text = "Sorry, wrong answer!"
+            playGameSounds(soundName: "Incorrect")
         }
 
 // highlight the right answer...  STUPID: executes, but does not change the color
@@ -213,6 +223,7 @@ class ViewController: UIViewController {
         if questionsAsked == questionsPerRound {
             // Game is over
             displayScore()
+            playGameSounds(soundName: "Start")
         } else {
             // Continue game
             displayQuestion()
@@ -240,7 +251,34 @@ class ViewController: UIViewController {
             self.nextRound()
         }
     }
-    
+
+     func loadGameSounds() {
+
+         var pathToSoundFile = Bundle.main.path(forResource: "GameSound", ofType: "wav")
+         var soundURL = URL(fileURLWithPath: pathToSoundFile!)
+         AudioServicesCreateSystemSoundID(soundURL as CFURL, &GameSoundID)
+         gameSounds["Start"] = GameSoundID
+        
+
+// pathToSoundFile is nil after the following call. the file name is correct, and it is in the same dir as the file above...?
+         pathToSoundFile = Bundle.main.path(forResource: "Crash-Cymbal-1", ofType: "wav")
+         soundURL = URL(fileURLWithPath: pathToSoundFile!)
+         AudioServicesCreateSystemSoundID(soundURL as CFURL, &GameSoundID)
+         gameSounds["End"] = GameSoundID
+        
+         pathToSoundFile = Bundle.main.path(forResource: "GoodJob", ofType: "m4a")
+         soundURL = URL(fileURLWithPath: pathToSoundFile!)
+         AudioServicesCreateSystemSoundID(soundURL as CFURL, &GameSoundID)
+         gameSounds["Correct"] = GameSoundID
+         
+         pathToSoundFile = Bundle.main.path(forResource: "Oops", ofType: "m4a")
+         soundURL = URL(fileURLWithPath: pathToSoundFile!)
+         AudioServicesCreateSystemSoundID(soundURL as CFURL, &GameSoundID)
+         gameSounds["Incorrect"] = GameSoundID
+     }
+  
+/*
+
     func loadGameStartSound() {
         let pathToSoundFile = Bundle.main.path(forResource: "GameSound", ofType: "wav")
         let soundURL = URL(fileURLWithPath: pathToSoundFile!)
@@ -250,5 +288,11 @@ class ViewController: UIViewController {
     func playGameStartSound() {
         AudioServicesPlaySystemSound(gameSound)
     }
+
+*/
+    func playGameSounds(soundName: String) {
+        AudioServicesPlaySystemSound(gameSounds[soundName]!)
+    }
+
 }
 

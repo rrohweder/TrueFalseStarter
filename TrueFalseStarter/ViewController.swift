@@ -31,6 +31,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var bButton: UIButton!
     @IBOutlet weak var cButton: UIButton!
     @IBOutlet weak var dButton: UIButton!
+    
+    let timeOutButton = UIButton()
 
 
     @IBOutlet weak var playAgainButton: UIButton!
@@ -95,6 +97,16 @@ class ViewController: UIViewController {
                 dButton.isHidden = false
                 // default not needed - using all enum types
         }
+
+        let delay = Int64(NSEC_PER_SEC * UInt64(15))  // STUPID: hard coded while I see if I can get it to work
+        // Calculates a time value to execute the method given current time and delay
+        let dispatchTime = DispatchTime.now() + Double(delay) / Double(NSEC_PER_SEC)
+        
+        // Executes the nextRound method at the dispatch time on the main queue
+        DispatchQueue.main.asyncAfter(deadline: dispatchTime) {
+            self.checkAnswer(self.timeOutButton)
+         }
+
     }
     
     func displayScore() {
@@ -109,11 +121,17 @@ class ViewController: UIViewController {
     }
         
     @IBAction func checkAnswer(_ sender: UIButton) {
+        
+        // this way: "checkAnswer(_ sender: UIButton? = nil)" let me call it with no arguments, 
+        // but broke the switch statements below: "cannot convert value of type 'UIButton' to 
+        // expected argument type '_OptionalNilComparisonType'"
+        
 
         var isCorrect: Bool = false
         var typeOfAnswer: Questions.answerTypes
-        var boolAnswer: Bool
+        let boolAnswer: Bool
         let correctAnswer: Int
+        var userTimedOut: Bool = false
 
         // Increment the questions asked counter
         questionsAsked += 1
@@ -144,23 +162,32 @@ class ViewController: UIViewController {
                     isCorrect = true
                 }
             
-            case dButton: questionField.text = "DButton"
+            case dButton:
                 if questions.checkAnswer(type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 3, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
                 }
+            case timeOutButton:
+                userTimedOut = true
             
-            default: questionField.text = sender.description
+            default: print("unexpected sender value")
+                // user did not answer in time - sender == nil
+                // isCorrect is already set to false.
         }
-
+        
         if isCorrect {
             correctQuestions += 1
             questionField.text = "Correct!"
             playGameSounds(soundName: "Correct")
         } else {
-            questionField.text = "Sorry, wrong answer!"
-            playGameSounds(soundName: "Incorrect")
+            if (userTimedOut) {
+                questionField.text = "Sorry, not quick enough!"
+                playGameSounds(soundName: "TimedOut")
+            } else {
+                questionField.text = "Sorry, wrong answer!"
+                playGameSounds(soundName: "Incorrect")
+            }
         }
-
+        
         (typeOfAnswer, boolAnswer, correctAnswer) = questions.getCorrectAnswer()
         if (typeOfAnswer == Questions.answerTypes.trueFalse) {
             if (boolAnswer == true) {
@@ -222,28 +249,33 @@ class ViewController: UIViewController {
         }
     }
 
-     func loadGameSounds() {
+    func loadGameSounds() {
 
-         var pathToSoundFile = Bundle.main.path(forResource: "GameSound", ofType: "wav")
-         var soundURL = URL(fileURLWithPath: pathToSoundFile!)
-         AudioServicesCreateSystemSoundID(soundURL as CFURL, &GameSoundID)
-         gameSounds["Start"] = GameSoundID
-        
-         pathToSoundFile = Bundle.main.path(forResource: "Crash-Cymbal-1", ofType: "wav")
-         soundURL = URL(fileURLWithPath: pathToSoundFile!)
-         AudioServicesCreateSystemSoundID(soundURL as CFURL, &GameSoundID)
-         gameSounds["End"] = GameSoundID
-        
-         pathToSoundFile = Bundle.main.path(forResource: "GoodJob", ofType: "m4a")
-         soundURL = URL(fileURLWithPath: pathToSoundFile!)
-         AudioServicesCreateSystemSoundID(soundURL as CFURL, &GameSoundID)
-         gameSounds["Correct"] = GameSoundID
-         
-         pathToSoundFile = Bundle.main.path(forResource: "Oops", ofType: "m4a")
-         soundURL = URL(fileURLWithPath: pathToSoundFile!)
-         AudioServicesCreateSystemSoundID(soundURL as CFURL, &GameSoundID)
-         gameSounds["Incorrect"] = GameSoundID
-     }
+        var pathToSoundFile = Bundle.main.path(forResource: "GameSound", ofType: "wav")
+        var soundURL = URL(fileURLWithPath: pathToSoundFile!)
+        AudioServicesCreateSystemSoundID(soundURL as CFURL, &GameSoundID)
+        gameSounds["Start"] = GameSoundID
+
+        pathToSoundFile = Bundle.main.path(forResource: "Crash-Cymbal-1", ofType: "wav")
+        soundURL = URL(fileURLWithPath: pathToSoundFile!)
+        AudioServicesCreateSystemSoundID(soundURL as CFURL, &GameSoundID)
+        gameSounds["End"] = GameSoundID
+
+        pathToSoundFile = Bundle.main.path(forResource: "GoodJob", ofType: "m4a")
+        soundURL = URL(fileURLWithPath: pathToSoundFile!)
+        AudioServicesCreateSystemSoundID(soundURL as CFURL, &GameSoundID)
+        gameSounds["Correct"] = GameSoundID
+
+        pathToSoundFile = Bundle.main.path(forResource: "Oops", ofType: "m4a")
+        soundURL = URL(fileURLWithPath: pathToSoundFile!)
+        AudioServicesCreateSystemSoundID(soundURL as CFURL, &GameSoundID)
+        gameSounds["Incorrect"] = GameSoundID
+
+        pathToSoundFile = Bundle.main.path(forResource: "TimedOut", ofType: "m4a")
+        soundURL = URL(fileURLWithPath: pathToSoundFile!)
+        AudioServicesCreateSystemSoundID(soundURL as CFURL, &GameSoundID)
+        gameSounds["TimedOut"] = GameSoundID
+    }
   
     func playGameSounds(soundName: String) {
         AudioServicesPlaySystemSound(gameSounds[soundName]!)

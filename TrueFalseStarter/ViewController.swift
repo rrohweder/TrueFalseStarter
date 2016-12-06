@@ -43,7 +43,11 @@ class ViewController: UIViewController {
         
         // Start game
         playGameSounds(soundName: "Start")
-        displayQuestion()
+        if (selectQuizType() == "Math") {
+            displayMathQuestions()
+        } else {
+            displayQuestion()
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -281,5 +285,17 @@ class ViewController: UIViewController {
         AudioServicesPlaySystemSound(gameSounds[soundName]!)
     }
 
-}
+    
+    func selectQuizType() -> String {
+        
+        return
+    }
+    
+    func displayMathQuestions() {
+        // get 2 or 3 random numbers
+        // construct problem to solve
+        // create 1 correct and 3 incorrect answers
+    }
+    
+
 

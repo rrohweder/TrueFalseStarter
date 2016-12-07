@@ -33,6 +33,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var dButton: UIButton!
     
     let timeOutButton = UIButton()
+    var currentQuizType = ""
 
 
     @IBOutlet weak var playAgainButton: UIButton!
@@ -40,14 +41,12 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         loadGameSounds()
+        questions.loadMathQuestions()
         
         // Start game
         playGameSounds(soundName: "Start")
-        if (selectQuizType() == "Math") {
-            displayMathQuestions()
-        } else {
-            displayQuestion()
-        }
+        currentQuizType = selectQuizType()
+        displayQuestion()
     }
 
     override func didReceiveMemoryWarning() {
@@ -56,7 +55,7 @@ class ViewController: UIViewController {
     }
     
     func displayQuestion() {
-        questionField.text = questions.getUniqueRandomQuestion()
+        questionField.text = questions.getUniqueRandomQuestion(quizType: currentQuizType)
         
         // hide all input controls
         playAgainButton.isHidden = true
@@ -86,18 +85,18 @@ class ViewController: UIViewController {
 
         
         // unhide the needed input control
-        switch questions.getQuestionType() {
+        switch questions.getQuestionType(quizType: currentQuizType) {
             case .trueFalse:
                 trueButton.isHidden = false
                 falseButton.isHidden = false
-            case .multipleChoice:
-                aButton.setTitle(questions.getMultiChoiceAnswers()[0], for: UIControlState.normal)
+            case .multipleChoice, .math:
+                aButton.setTitle(questions.getMultiChoiceAnswers(quizType: currentQuizType)[0], for: UIControlState.normal)
                 aButton.isHidden = false
-                bButton.setTitle(questions.getMultiChoiceAnswers()[1], for: UIControlState.normal)
+                bButton.setTitle(questions.getMultiChoiceAnswers(quizType: currentQuizType)[1], for: UIControlState.normal)
                 bButton.isHidden = false
-                cButton.setTitle(questions.getMultiChoiceAnswers()[2], for: UIControlState.normal)
+                cButton.setTitle(questions.getMultiChoiceAnswers(quizType: currentQuizType)[2], for: UIControlState.normal)
                 cButton.isHidden = false
-                dButton.setTitle(questions.getMultiChoiceAnswers()[3], for: UIControlState.normal)
+                dButton.setTitle(questions.getMultiChoiceAnswers(quizType: currentQuizType)[3], for: UIControlState.normal)
                 dButton.isHidden = false
                 // default not needed - using all enum types
         }
@@ -142,32 +141,32 @@ class ViewController: UIViewController {
 
         switch sender {
             case trueButton:
-                if questions.checkAnswer(type: Questions.answerTypes.trueFalse, boolAnswer: true, selectedAnswer: 0, numberAnswer: 0, textAnswer: "" ) {
+                if questions.checkAnswer(quizType: currentQuizType, type: Questions.answerTypes.trueFalse, boolAnswer: true, selectedAnswer: 0, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
                 }
 
             case falseButton:
-                if questions.checkAnswer(type: Questions.answerTypes.trueFalse, boolAnswer: false, selectedAnswer: 0, numberAnswer: 0, textAnswer: "" ) {
+                if questions.checkAnswer(quizType: currentQuizType, type: Questions.answerTypes.trueFalse, boolAnswer: false, selectedAnswer: 0, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
                 }
             
             case aButton:
-                if questions.checkAnswer(type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 0, numberAnswer: 0, textAnswer: "" ) {
+                if questions.checkAnswer(quizType: currentQuizType, type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 0, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
                 }
             
             case bButton:
-                 if questions.checkAnswer(type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 1, numberAnswer: 0, textAnswer: "" ) {
+                 if questions.checkAnswer(quizType: currentQuizType, type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 1, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
                 }
             
             case cButton:
-                if questions.checkAnswer(type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 2, numberAnswer: 0, textAnswer: "" ) {
+                if questions.checkAnswer(quizType: currentQuizType, type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 2, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
                 }
             
             case dButton:
-                if questions.checkAnswer(type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 3, numberAnswer: 0, textAnswer: "" ) {
+                if questions.checkAnswer(quizType: currentQuizType, type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 3, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
                 }
             case timeOutButton:
@@ -192,7 +191,7 @@ class ViewController: UIViewController {
             }
         }
         
-        (typeOfAnswer, boolAnswer, correctAnswer) = questions.getCorrectAnswer()
+        (typeOfAnswer, boolAnswer, correctAnswer) = questions.getCorrectAnswer(quizType: currentQuizType)
         if (typeOfAnswer == Questions.answerTypes.trueFalse) {
             if (boolAnswer == true) {
                 trueButton.titleLabel?.textColor = UIColor.green
@@ -287,15 +286,8 @@ class ViewController: UIViewController {
 
     
     func selectQuizType() -> String {
-        
-        return
+        return "Math"
     }
     
-    func displayMathQuestions() {
-        // get 2 or 3 random numbers
-        // construct problem to solve
-        // create 1 correct and 3 incorrect answers
-    }
-    
-
+}
 

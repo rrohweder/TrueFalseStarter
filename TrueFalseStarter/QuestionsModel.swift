@@ -9,10 +9,13 @@
 import GameKit
 
 class Questions {
-
+    
+    var quizType = "nonmath"
+    
     enum answerTypes {
         case trueFalse
         case multipleChoice
+        case math
 /* might add these later:
         case number
         case text
@@ -179,40 +182,49 @@ class Questions {
     var indexOfSelectedQuestion: Int
     var questionsUsed = [Int]()
 
-    func getUniqueRandomQuestion() -> String {
+    func getUniqueRandomQuestion(quizType: String) -> String {
         var attempts = 0
         // repeat until the new random number hasn't already been used
         repeat {
-            indexOfSelectedQuestion = GKRandomSource.sharedRandom().nextInt(upperBound: questionsArray.count)
+            if quizType == "Math" {
+                indexOfSelectedQuestion = GKRandomSource.sharedRandom().nextInt(upperBound: numberQuestions.count)
+            } else {
+                indexOfSelectedQuestion = GKRandomSource.sharedRandom().nextInt(upperBound: questionsArray.count)
+            }
             attempts = attempts + 1
-        } while (questionsUsed.contains(indexOfSelectedQuestion) && (attempts < (questionsArray.count * 3)))
+                
+        } while (questionsUsed.contains(indexOfSelectedQuestion)) && (attempts < (questionsArray.count * 3))
         
         questionsUsed.append(indexOfSelectedQuestion)
         
-        return questionsArray[indexOfSelectedQuestion].question
+        if (quizType == "Math") {
+            return numberQuestions[indexOfSelectedQuestion].question
+        } else {
+            return questionsArray[indexOfSelectedQuestion].question
+        }
 
     }
     
-    func getMultiChoiceAnswers() -> [String] {
+    func getMultiChoiceAnswers(quizType: String) -> [String] {
         return questionsArray[indexOfSelectedQuestion].answerOptions
     }
     
-    func getQuestionType() -> answerTypes {
+    func getQuestionType(quizType: String) -> answerTypes {
         return questionsArray[indexOfSelectedQuestion].answerType
     }
     
-    func getCorrectAnswer() -> (answerTypes, Bool, Int) {
+    func getCorrectAnswer(quizType: String) -> (answerTypes, Bool, Int) {
         return (questionsArray[indexOfSelectedQuestion].answerType, questionsArray[indexOfSelectedQuestion].trueFalseAnswer, questionsArray[indexOfSelectedQuestion].multiChoiceAnswer)
     }
     
-    func checkAnswer(type: answerTypes, boolAnswer: Bool, selectedAnswer: Int, numberAnswer: Int, textAnswer: String ) -> Bool {
+    func checkAnswer(quizType: String, type: answerTypes, boolAnswer: Bool, selectedAnswer: Int, numberAnswer: Int, textAnswer: String ) -> Bool {
 
         switch type {
             case .trueFalse:
                 if questionsArray[indexOfSelectedQuestion].trueFalseAnswer == boolAnswer {
                     return true
                 }
-            case .multipleChoice:
+            case .multipleChoice, .math:
                 if questionsArray[indexOfSelectedQuestion].multiChoiceAnswer == selectedAnswer {
                     return true
                 }
@@ -239,4 +251,47 @@ class Questions {
 
     }
 // }
+   
+    var numberQuestions:[QuestionAnswer] = []
+    
+    func loadMathQuestions() {
+        var answer = 0
+        var operatorString = "unknown operator"
+        var theseAnswerOptions:[String] = []
+        
+        for questionIndex in 0...9 {
+            let theOperator = GKRandomSource.sharedRandom().nextInt(upperBound: 1)
+            let operand1 = GKRandomSource.sharedRandom().nextInt(upperBound: 99)
+            let operand2 = GKRandomSource.sharedRandom().nextInt(upperBound: 99)
+            if (theOperator == 0) {
+                answer = operand1 + operand2
+                operatorString = "plus"
+            } else {
+                answer = operand1 * operand2
+                operatorString = "times"
+            }
+            let answerButton = GKRandomSource.sharedRandom().nextInt(upperBound: 3)
+            
+            for answerIndex in 0...3 {
+                if answerIndex == answerButton {
+                    theseAnswerOptions.append(String(answer))
+                } else {
+                    theseAnswerOptions.append(String(GKRandomSource.sharedRandom().nextInt(upperBound: answer * 2)))
+                }
+            }
+            
+            numberQuestions.append(
+                QuestionAnswer(
+                    question: "What is \(operand1) \(operatorString) \(operand2)?",
+                    answerType: answerTypes.math,
+                    trueFalseAnswer: false,
+                    answerOptions: theseAnswerOptions,
+                    multiChoiceAnswer: 2
+                )
+            )
+        }
+    }
+    
+    
+    
 }

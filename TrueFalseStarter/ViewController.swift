@@ -24,19 +24,17 @@ class ViewController: UIViewController {
     var GameSoundID: SystemSoundID = 0
 
     @IBOutlet weak var questionField: UILabel!
-    @IBOutlet weak var trueButton: UIButton!
-    @IBOutlet weak var falseButton: UIButton!
 
     @IBOutlet weak var aButton: UIButton!
     @IBOutlet weak var bButton: UIButton!
     @IBOutlet weak var cButton: UIButton!
     @IBOutlet weak var dButton: UIButton!
-    
-    let timeOutButton = UIButton()
-    var currentQuizType = ""
-
 
     @IBOutlet weak var playAgainButton: UIButton!
+
+//      let timeOutButton = UIButton()  until I can cancel a timer
+
+    var currentQuizType = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,13 +42,12 @@ class ViewController: UIViewController {
         
         // Start game
         playGameSounds(soundName: "Start")
-        currentQuizType = selectQuizType()
-        if currentQuizType == "Math" {
-            questions.loadMathQuestionSet()
-        } else {
-            questions.loadTextQuestionSet()
-        }
-        displayQuestion()
+        questionField.text = "Which type of quiz would you like to take?"
+        aButton.setTitle("Text", for: UIControlState.normal)
+        bButton.setTitle("Math", for: UIControlState.normal)
+        cButton.isHidden = true
+        dButton.isHidden = true
+        playAgainButton.isHidden = true
     }
 
     override func didReceiveMemoryWarning() {
@@ -63,8 +60,6 @@ class ViewController: UIViewController {
         
         // hide all input controls
         playAgainButton.isHidden = true
-        trueButton.isHidden = true
-        falseButton.isHidden = true
         aButton.isHidden = true
         bButton.isHidden = true
         cButton.isHidden = true
@@ -80,8 +75,6 @@ class ViewController: UIViewController {
          tell me what I was doing wrong, but UIButton has a ton of attributes!
          */
         
-         trueButton.setTitleColor(UIColor.white, for: UIControlState.normal)
-         falseButton.setTitleColor(UIColor.white, for: UIControlState.normal)
          aButton.setTitleColor(UIColor.white, for: UIControlState.normal)
          bButton.setTitleColor(UIColor.white, for: UIControlState.normal)
          cButton.setTitleColor(UIColor.white, for: UIControlState.normal)
@@ -91,8 +84,10 @@ class ViewController: UIViewController {
         // unhide the needed input control
         switch questions.getQuestionType() {
             case .trueFalse:
-                trueButton.isHidden = false
-                falseButton.isHidden = false
+                aButton.setTitle(questions.getMultiChoiceAnswers()[0], for: UIControlState.normal)
+                aButton.isHidden = false
+                bButton.setTitle(questions.getMultiChoiceAnswers()[1], for: UIControlState.normal)
+                bButton.isHidden = false
             case .multipleChoice, .math:
                 aButton.setTitle(questions.getMultiChoiceAnswers()[0], for: UIControlState.normal)
                 aButton.isHidden = false
@@ -119,8 +114,7 @@ class ViewController: UIViewController {
     
     func displayScore() {
         // Hide the answer buttons
-        trueButton.isHidden = true
-        falseButton.isHidden = true
+// STUPID? don't need to hide them?
         
         // Display play again button
         playAgainButton.isHidden = false
@@ -130,31 +124,26 @@ class ViewController: UIViewController {
         
     @IBAction func checkAnswer(_ sender: UIButton) {
         
-        // this way: "checkAnswer(_ sender: UIButton? = nil)" let me call it with no arguments, 
-        // but broke the switch statements below: "cannot convert value of type 'UIButton' to 
-        // expected argument type '_OptionalNilComparisonType'"
-        
+        // sort of overloading this...
+        if sender.currentTitle == "Math" || sender.currentTitle == "Text" {
+            currentQuizType = (sender.currentTitle)!
+            if currentQuizType == "Math" {
+                questions.loadMathQuestionSet()
+            } else {
+                questions.loadTextQuestionSet()
+            }
+            displayQuestion()
+            return
+        }
 
         var isCorrect: Bool = false
-        var typeOfAnswer: Questions.answerTypes
-        let boolAnswer: Bool
         let correctAnswer: Int
-        var userTimedOut: Bool = false
+        // var userTimedOut: Bool = false
 
         // Increment the questions asked counter
         questionsAsked += 1
 
         switch sender {
-            case trueButton:
-                if questions.checkAnswer(type: Questions.answerTypes.trueFalse, boolAnswer: true, selectedAnswer: 0, numberAnswer: 0, textAnswer: "" ) {
-                    isCorrect = true
-                }
-
-            case falseButton:
-                if questions.checkAnswer(type: Questions.answerTypes.trueFalse, boolAnswer: false, selectedAnswer: 0, numberAnswer: 0, textAnswer: "" ) {
-                    isCorrect = true
-                }
-            
             case aButton:
                 if questions.checkAnswer(type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 0, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
@@ -174,8 +163,10 @@ class ViewController: UIViewController {
                 if questions.checkAnswer(type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 3, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
                 }
+/*  leave out until I can cancel a timer.
             case timeOutButton:
                 userTimedOut = true
+*/
             
             default: print("unexpected sender value")
                 // user did not answer in time - sender == nil
@@ -187,37 +178,31 @@ class ViewController: UIViewController {
             questionField.text = "Correct!"
             playGameSounds(soundName: "Correct")
         } else {
+/* until I learn how to cancel timer
             if (userTimedOut) {
                 questionField.text = "Sorry, not quick enough!"
                 playGameSounds(soundName: "TimedOut")
             } else {
+*/
                 questionField.text = "Sorry, wrong answer!"
                 playGameSounds(soundName: "Incorrect")
+/*
             }
+*/ 
         }
         
-        (typeOfAnswer, boolAnswer, correctAnswer) = questions.getCorrectAnswer()
-        if (typeOfAnswer == Questions.answerTypes.trueFalse) {
-            if (boolAnswer == true) {
-                trueButton.titleLabel?.textColor = UIColor.green
-            } else {
-                falseButton.titleLabel?.textColor = UIColor.green
-            }
-        } else {
-            switch correctAnswer {
-                case 0: aButton.titleLabel?.textColor = UIColor.green
-                case 1: bButton.titleLabel?.textColor = UIColor.green
-                case 2: cButton.titleLabel?.textColor = UIColor.green
-                case 3: dButton.titleLabel?.textColor = UIColor.green
-                default: print("selectedAnswer is outside # questions range.")
-            }
+        correctAnswer = questions.getCorrectAnswer()
+        switch correctAnswer {
+            case 0: aButton.titleLabel?.textColor = UIColor.green
+            case 1: bButton.titleLabel?.textColor = UIColor.green
+            case 2: cButton.titleLabel?.textColor = UIColor.green
+            case 3: dButton.titleLabel?.textColor = UIColor.green
+            default: print("selectedAnswer is outside # questions range.")
         }
         
         loadNextRoundWithDelay(seconds: 2)
         
         // reset text color for all buttons
-        trueButton.setTitleColor(UIColor.white, for: UIControlState.normal)
-        falseButton.setTitleColor(UIColor.white, for: UIControlState.normal)
         aButton.setTitleColor(UIColor.white, for: UIControlState.normal)
         bButton.setTitleColor(UIColor.white, for: UIControlState.normal)
         cButton.setTitleColor(UIColor.white, for: UIControlState.normal)

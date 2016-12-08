@@ -104,8 +104,9 @@ class ViewController: UIViewController {
                 dButton.isHidden = false
                 // default not needed - using all enum types
         }
-
-        let delay = Int64(NSEC_PER_SEC * UInt64(15))  // STUPID: hard coded while I see if I can get it to work
+        
+/* disable timer until I find-out how to kill it when the user answers the question.
+        let delay = Int64(NSEC_PER_SEC * UInt64(15))  // hard coded while I see if I can get it to work
         // Calculates a time value to execute the method given current time and delay
         let dispatchTime = DispatchTime.now() + Double(delay) / Double(NSEC_PER_SEC)
         
@@ -113,7 +114,7 @@ class ViewController: UIViewController {
         DispatchQueue.main.asyncAfter(deadline: dispatchTime) {
             self.checkAnswer(self.timeOutButton)
          }
-
+*/
     }
     
     func displayScore() {

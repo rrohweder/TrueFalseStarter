@@ -14,10 +14,6 @@ class Questions {
         case trueFalse
         case multipleChoice
         case math
-/* might add these later:
-        case number
-        case text
- */
     }
     
     struct QuestionAnswer {
@@ -25,10 +21,6 @@ class Questions {
         let answerType: answerTypes
         let answerOptions: [String]
         let multiChoiceAnswer: Int
-/* might add these later:
-        let numAnswer: Int
-        let textAnswer: String
-*/
     }
     
     // an array of QuestionAnswer structs
@@ -36,42 +28,34 @@ class Questions {
         
         
     func loadTextQuestionSet() {
-
+        questionsUsed.removeAll()
         questionSet = [
             QuestionAnswer(
                 question: "Only female koalas can whistle",
                 answerType:answerTypes.trueFalse,
-                answerOptions: [],
+                answerOptions: ["true","false"],
                 multiChoiceAnswer: 1
-                // numAnswer: 0,
-                // textAnswer:""
             ),
 
             QuestionAnswer(
                 question: "Blue whales are technically whales",
                 answerType:answerTypes.trueFalse,
-                answerOptions: [],
+                answerOptions: ["true","false"],
                 multiChoiceAnswer: 0
-                // numAnswer: 0,
-                // textAnswer:""
             ),
                 
             QuestionAnswer(
                 question: "Camels are cannibalistic",
                 answerType:answerTypes.trueFalse,
-                answerOptions: [],
+                answerOptions: ["true","false"],
                 multiChoiceAnswer: 1
-                // numAnswer: 0,
-                // textAnswer:""
             ),
             
             QuestionAnswer(
                 question: "All ducks are birds",
                 answerType:answerTypes.trueFalse,
-                answerOptions: [],
+                answerOptions: ["true","false"],
                 multiChoiceAnswer: 0
-                // numAnswer: 0,
-                // textAnswer:""
             ),
             
             QuestionAnswer(
@@ -79,8 +63,6 @@ class Questions {
                 answerType:answerTypes.multipleChoice,
                 answerOptions: ["George Washington","Franklin D. Roosevelt","Woodrow Wilson","Andrew Jackson"],
                 multiChoiceAnswer: 1
-                // numAnswer: 0,
-                // textAnswer:""
             ),
             
             QuestionAnswer(
@@ -88,8 +70,6 @@ class Questions {
                 answerType:answerTypes.multipleChoice,
                 answerOptions: ["Nigeria","Russia","Iran","Vietnam"],
                 multiChoiceAnswer: 0
-                // numAnswer: 0,
-                // textAnswer:""
                 ),
 
             QuestionAnswer(
@@ -97,8 +77,6 @@ class Questions {
                 answerType:answerTypes.multipleChoice,
                 answerOptions:["1918","1919","1945","1954"],
                 multiChoiceAnswer: 2
-                // numAnswer:0,
-                // textAnswer:""
             ),
      
             QuestionAnswer(
@@ -106,8 +84,6 @@ class Questions {
                 answerType: answerTypes.multipleChoice,
                 answerOptions: ["Paris","Washington D.C.","New York City","Boston"],
                 multiChoiceAnswer: 2
-                // numAnswer: 0,
-                // textAnswer: ""
             ),
             
             QuestionAnswer(
@@ -115,8 +91,6 @@ class Questions {
                 answerType:answerTypes.multipleChoice,
                 answerOptions:["Iran","Iraq","Brazil","Canada"],
                 multiChoiceAnswer: 3
-                // numAnswer: 0,
-                // textAnswer:""
             ),
      
             QuestionAnswer(
@@ -124,8 +98,6 @@ class Questions {
                 answerType:answerTypes.multipleChoice,
                 answerOptions:["Italy","Brazil","Argetina","Spain"],
                 multiChoiceAnswer: 1
-                // numAnswer: 0,
-                // textAnswer:""
             ),
 
             QuestionAnswer(
@@ -133,8 +105,6 @@ class Questions {
                 answerType:answerTypes.multipleChoice,
                 answerOptions:["Yangtze","Mississippi","Congo","Mekong"],
                 multiChoiceAnswer: 1
-                // numAnswer: 0,
-                // textAnswer:""
             ),
 
             QuestionAnswer(
@@ -142,8 +112,6 @@ class Questions {
                 answerType:answerTypes.multipleChoice,
                 answerOptions:["Mexico City","Cape Town","San Juan","Sydney"],
                 multiChoiceAnswer: 0
-                // numAnswer: 0,
-                // textAnswer:""
             ),
 
             QuestionAnswer(
@@ -151,8 +119,6 @@ class Questions {
                 answerType:answerTypes.multipleChoice,
                 answerOptions:["Poland","United States","Sweden","Senegal"],
                 multiChoiceAnswer: 0
-                // numAnswer: 0,
-                // textAnswer:""
             ),
 
             QuestionAnswer(
@@ -160,8 +126,6 @@ class Questions {
                 answerType:answerTypes.multipleChoice,
                 answerOptions:["France","Germany","Japan","Great Britian"],
                 multiChoiceAnswer: 3
-                // numAnswer: 0,
-                // textAnswer:""
             )
             ]
     }
@@ -172,6 +136,7 @@ class Questions {
         var operatorString = "unknown operator"
         var theseAnswerOptions:[String] = []
         questionSet.removeAll()
+        questionsUsed.removeAll()
         
         for _ in 0...100 {  // generate 100 problem and answers sets
             let theOperator = GKRandomSource.sharedRandom().nextInt(upperBound: 1)

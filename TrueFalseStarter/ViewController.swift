@@ -32,7 +32,7 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var playAgainButton: UIButton!
 
-//      let timeOutButton = UIButton()  until I can cancel a timer
+//      let timeOutButton = UIButton()  commented-out until I can cancel a timer
 
     var currentQuizType = ""
     
@@ -58,28 +58,14 @@ class ViewController: UIViewController {
     func displayQuestion() {
         questionField.text = questions.getUniqueRandomQuestion()
         
+        resetBackgroundColor()
         // hide all input controls
         playAgainButton.isHidden = true
         aButton.isHidden = true
         bButton.isHidden = true
         cButton.isHidden = true
         dButton.isHidden = true
-        // May add these later...
-        //      numberInput.isHidden = true
-        //      textInputControl.ishidden = true
-        
-        /*
-         When the user picks the wrong answer, I was succeeding at turning the correct answer green,
-         EXCEPT ON THE FIRST QUESTION. Adding these lines got it to work for the first question, but 
-         I do not know why...  I tried to find an attribute on the correct-answer button that would
-         tell me what I was doing wrong, but UIButton has a ton of attributes!
-         */
-        
-         aButton.setTitleColor(UIColor.white, for: UIControlState.normal)
-         bButton.setTitleColor(UIColor.white, for: UIControlState.normal)
-         cButton.setTitleColor(UIColor.white, for: UIControlState.normal)
-         dButton.setTitleColor(UIColor.white, for: UIControlState.normal)
-
+    
         
         // unhide the needed input control
         switch questions.getQuestionType() {
@@ -113,8 +99,6 @@ class ViewController: UIViewController {
     }
     
     func displayScore() {
-        // Hide the answer buttons
-// STUPID? don't need to hide them?
         
         // Display play again button
         playAgainButton.isHidden = false
@@ -137,7 +121,7 @@ class ViewController: UIViewController {
         }
 
         var isCorrect: Bool = false
-        let correctAnswer: Int
+        let correctAnswer: Int = questions.getCorrectAnswer()
         // var userTimedOut: Bool = false
 
         // Increment the questions asked counter
@@ -147,21 +131,33 @@ class ViewController: UIViewController {
             case aButton:
                 if questions.checkAnswer(type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 0, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
+                    aButton.backgroundColor = UIColor.green
+                } else {
+                    aButton.backgroundColor = UIColor.red
                 }
             
             case bButton:
                  if questions.checkAnswer(type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 1, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
+                    bButton.backgroundColor = UIColor.green
+                } else {
+                    bButton.backgroundColor = UIColor.red
                 }
-            
+        
             case cButton:
                 if questions.checkAnswer(type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 2, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
+                    cButton.backgroundColor = UIColor.green
+                } else {
+                    cButton.backgroundColor = UIColor.red
                 }
-            
+        
             case dButton:
                 if questions.checkAnswer(type: Questions.answerTypes.multipleChoice, boolAnswer: true, selectedAnswer: 3, numberAnswer: 0, textAnswer: "" ) {
                     isCorrect = true
+                    dButton.backgroundColor = UIColor.green
+                } else {
+                    dButton.backgroundColor = UIColor.red
                 }
 /*  leave out until I can cancel a timer.
             case timeOutButton:
@@ -178,36 +174,28 @@ class ViewController: UIViewController {
             questionField.text = "Correct!"
             playGameSounds(soundName: "Correct")
         } else {
-/* until I learn how to cancel timer
+            /* until I learn how to cancel timer
             if (userTimedOut) {
                 questionField.text = "Sorry, not quick enough!"
                 playGameSounds(soundName: "TimedOut")
             } else {
-*/
+             */
                 questionField.text = "Sorry, wrong answer!"
                 playGameSounds(soundName: "Incorrect")
+                switch correctAnswer {
+                    case 0: aButton.backgroundColor = UIColor.green
+                    case 1: bButton.backgroundColor = UIColor.green
+                    case 2: cButton.backgroundColor = UIColor.green
+                    case 3: dButton.backgroundColor = UIColor.green
+                    default: print("unexpected correctAnswer value")
+                }
+            
 /*
             }
 */ 
         }
-        
-        correctAnswer = questions.getCorrectAnswer()
-        switch correctAnswer {
-            case 0: aButton.titleLabel?.textColor = UIColor.green
-            case 1: bButton.titleLabel?.textColor = UIColor.green
-            case 2: cButton.titleLabel?.textColor = UIColor.green
-            case 3: dButton.titleLabel?.textColor = UIColor.green
-            default: print("selectedAnswer is outside # questions range.")
-        }
-        
+    
         loadNextRoundWithDelay(seconds: 2)
-        
-        // reset text color for all buttons
-        aButton.setTitleColor(UIColor.white, for: UIControlState.normal)
-        bButton.setTitleColor(UIColor.white, for: UIControlState.normal)
-        cButton.setTitleColor(UIColor.white, for: UIControlState.normal)
-        dButton.setTitleColor(UIColor.white, for: UIControlState.normal)
-        
     }
     
     func nextRound() {
@@ -215,6 +203,22 @@ class ViewController: UIViewController {
             // Game is over
             displayScore()
             playGameSounds(soundName: "End")
+            
+// here?
+            
+            resetBackgroundColor()
+
+            questionField.text = "Which type of quiz would you like to take?"
+            aButton.setTitle("Text", for: UIControlState.normal)
+            bButton.setTitle("Math", for: UIControlState.normal)
+            cButton.isHidden = true
+            dButton.isHidden = true
+            playAgainButton.isHidden = true
+            questionsAsked = 0
+            correctQuestions = 0
+
+            
+            
         } else {
             // Continue game
             displayQuestion()
@@ -224,6 +228,7 @@ class ViewController: UIViewController {
     @IBAction func playAgain() {
         questionsAsked = 0
         correctQuestions = 0
+        // resetBackgroundColor()
         nextRound()
     }
     
@@ -278,6 +283,13 @@ class ViewController: UIViewController {
     func selectQuizType() -> String {
         return "Math"
     }
-    
+
+    func resetBackgroundColor() {
+        aButton.backgroundColor = UIColor(red:12/255.0, green: 121/255.0, blue: 150/255.0, alpha: 1.0)
+        bButton.backgroundColor = UIColor(red:12/255.0, green: 121/255.0, blue: 150/255.0, alpha: 1.0)
+        cButton.backgroundColor = UIColor(red:12/255.0, green: 121/255.0, blue: 150/255.0, alpha: 1.0)
+        dButton.backgroundColor = UIColor(red:12/255.0, green: 121/255.0, blue: 150/255.0, alpha: 1.0)
+    }
+
 }
 

@@ -138,7 +138,7 @@ class Questions {
         questionSet.removeAll()
         questionsUsed.removeAll()
         
-        for _ in 0...100 {  // generate 100 problem and answers sets
+        for _ in 0...25 {  // generate 25 problem and answers sets
             let theOperator = GKRandomSource.sharedRandom().nextInt(upperBound: 1)
             let operand1 = GKRandomSource.sharedRandom().nextInt(upperBound: 99)
             let operand2 = GKRandomSource.sharedRandom().nextInt(upperBound: 99)

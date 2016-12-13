@@ -204,8 +204,6 @@ class ViewController: UIViewController {
             displayScore()
             playGameSounds(soundName: "End")
             
-// here?
-            
             resetBackgroundColor()
 
             questionField.text = "Which type of quiz would you like to take?"

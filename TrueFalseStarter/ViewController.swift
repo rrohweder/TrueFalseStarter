@@ -42,17 +42,22 @@ class ViewController: UIViewController {
         
         // Start game
         playGameSounds(soundName: "Start")
+        promptForWhichQuizType()
+    }
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    
+    func promptForWhichQuizType() {
         questionField.text = "Which type of quiz would you like to take?"
         aButton.setTitle("Text", for: UIControlState.normal)
         bButton.setTitle("Math", for: UIControlState.normal)
         cButton.isHidden = true
         dButton.isHidden = true
         playAgainButton.isHidden = true
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     func displayQuestion() {
@@ -99,11 +104,15 @@ class ViewController: UIViewController {
     }
     
     func displayScore() {
-        
+//        Why isn't this displaying the score ?!? (debug stepped through it - is IS executing this.'
         // Display play again button
         playAgainButton.isHidden = false
-        
+        aButton.isHidden = true
+        bButton.isHidden = true
+        cButton.isHidden = true
+        dButton.isHidden = true
         questionField.text = "Way to go!\nYou got \(correctQuestions) out of \(questionsPerRound) correct!"
+        questionField.isHidden = false
     }
         
     @IBAction func checkAnswer(_ sender: UIButton) {
@@ -201,22 +210,12 @@ class ViewController: UIViewController {
     func nextRound() {
         if questionsAsked == questionsPerRound {
             // Game is over
-            displayScore()
-            playGameSounds(soundName: "End")
-            
             resetBackgroundColor()
-
-            questionField.text = "Which type of quiz would you like to take?"
-            aButton.setTitle("Text", for: UIControlState.normal)
-            bButton.setTitle("Math", for: UIControlState.normal)
-            cButton.isHidden = true
-            dButton.isHidden = true
-            playAgainButton.isHidden = true
+            playGameSounds(soundName: "End")
+            displayScoreWithDelay(seconds: 5)
+            promptForWhichQuizType()
             questionsAsked = 0
             correctQuestions = 0
-
-            
-            
         } else {
             // Continue game
             displayQuestion()
@@ -245,6 +244,19 @@ class ViewController: UIViewController {
         }
     }
 
+    func displayScoreWithDelay(seconds: Int) {
+        displayScore()
+        // Converts a delay in seconds to nanoseconds as signed 64 bit integer
+        let delay = Int64(NSEC_PER_SEC * UInt64(seconds))
+        // Calculates a time value to execute the method given current time and delay
+        let dispatchTime = DispatchTime.now() + Double(delay) / Double(NSEC_PER_SEC)
+        
+        // Executes the nextRound method at the dispatch time on the main queue
+        DispatchQueue.main.asyncAfter(deadline: dispatchTime) {
+            self.playAgain()
+        }
+    }
+    
     func loadGameSounds() {
 
         var pathToSoundFile = Bundle.main.path(forResource: "GameSound", ofType: "wav")

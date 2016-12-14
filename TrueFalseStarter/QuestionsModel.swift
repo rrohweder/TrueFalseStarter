@@ -183,7 +183,7 @@ class Questions {
         repeat {
             indexOfSelectedQuestion = GKRandomSource.sharedRandom().nextInt(upperBound: questionSet.count)
             attempts = attempts + 1
-        } while (questionsUsed.contains(indexOfSelectedQuestion)) && (attempts < (questionSet.count * 3))
+        } while (questionsUsed.contains(indexOfSelectedQuestion)) && (attempts < (questionSet.count * 5))
         
         questionsUsed.append(indexOfSelectedQuestion)
         return questionSet[indexOfSelectedQuestion].question

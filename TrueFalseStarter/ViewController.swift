@@ -52,12 +52,17 @@ class ViewController: UIViewController {
     
     
     func promptForWhichQuizType() {
+        questionsAsked = 0
+        correctQuestions = 0
+        cButton.isHidden = true
+        dButton.isHidden = true
         questionField.text = "Which type of quiz would you like to take?"
         aButton.setTitle("Text", for: UIControlState.normal)
         bButton.setTitle("Math", for: UIControlState.normal)
-        cButton.isHidden = true
-        dButton.isHidden = true
+        aButton.isHidden = false
+        bButton.isHidden = false
         playAgainButton.isHidden = true
+
     }
     
     func displayQuestion() {
@@ -112,7 +117,6 @@ class ViewController: UIViewController {
         cButton.isHidden = true
         dButton.isHidden = true
         questionField.text = "Way to go!\nYou got \(correctQuestions) out of \(questionsPerRound) correct!"
-        questionField.isHidden = false
     }
         
     @IBAction func checkAnswer(_ sender: UIButton) {
@@ -212,10 +216,7 @@ class ViewController: UIViewController {
             // Game is over
             resetBackgroundColor()
             playGameSounds(soundName: "End")
-            displayScoreWithDelay(seconds: 5)
-            promptForWhichQuizType()
-            questionsAsked = 0
-            correctQuestions = 0
+            displayScore()
         } else {
             // Continue game
             displayQuestion()
@@ -226,7 +227,8 @@ class ViewController: UIViewController {
         questionsAsked = 0
         correctQuestions = 0
         // resetBackgroundColor()
-        nextRound()
+        promptForWhichQuizType()
+        // nextRound()
     }
     
 
@@ -244,6 +246,7 @@ class ViewController: UIViewController {
         }
     }
 
+/*
     func displayScoreWithDelay(seconds: Int) {
         displayScore()
         // Converts a delay in seconds to nanoseconds as signed 64 bit integer
@@ -253,10 +256,10 @@ class ViewController: UIViewController {
         
         // Executes the nextRound method at the dispatch time on the main queue
         DispatchQueue.main.asyncAfter(deadline: dispatchTime) {
-            self.playAgain()
+            self.promptForWhichQuizType()
         }
     }
-    
+*/
     func loadGameSounds() {
 
         var pathToSoundFile = Bundle.main.path(forResource: "GameSound", ofType: "wav")
@@ -290,10 +293,6 @@ class ViewController: UIViewController {
     }
 
     
-    func selectQuizType() -> String {
-        return "Math"
-    }
-
     func resetBackgroundColor() {
         aButton.backgroundColor = UIColor(red:12/255.0, green: 121/255.0, blue: 150/255.0, alpha: 1.0)
         bButton.backgroundColor = UIColor(red:12/255.0, green: 121/255.0, blue: 150/255.0, alpha: 1.0)
